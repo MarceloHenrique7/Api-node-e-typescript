@@ -7,11 +7,15 @@ const startServer = () => {
 }
 
 
-if (process.env.IS_LOCALHOST  != 'true') {
-  Knex.migrate.latest().then(() => {
-    startServer();
+if (process.env.IS_LOCALHOST  != 'true') { // configuração para rodar as seeds e as migrations, quando o server estiver em produção
+  Knex.migrate
+  .latest()
+  .then(() => {
+    Knex.seed.run()
+    .then(() => startServer())
+    .catch(console.log)
   })
   .catch(console.log)
 } else {
-    startServer();
+    startServer(); // caso a variavel de ambiente "IS_LOCALHOST" esteja definida como 'true' ele roda o server sem precisar rodar as migrations e as seeds
 }
