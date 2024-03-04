@@ -1,1 +1,10 @@
 node_modules
+yarn-error.log
+
+
+/build
+/coverage
+
+
+.env
+*.sqlite
