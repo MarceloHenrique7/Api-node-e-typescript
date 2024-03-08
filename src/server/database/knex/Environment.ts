@@ -1,14 +1,16 @@
 import { Knex } from 'knex';
 import path from 'path';
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+let {DATABASE_URL, DATABASE_HOST, DATABASE_NAME, DATABASE_USER, DATABASE_PASSWORD, ENDPOINT_ID, DATABASE_PORT} = process.env
 
 
 // configuração de desenvolvimento pro knex e sqlite
 export const development: Knex.Config = {
-  client: 'sqlite3',
-  useNullAsDefault: true,
-  connection: {
-    filename: path.resolve(__dirname, '..', '..', '..', '..', 'database.sqlite')
-  },
+  client: 'pg',
+
   migrations: {
     directory: path.resolve(__dirname, '..', 'migrations')
   },
@@ -16,11 +18,14 @@ export const development: Knex.Config = {
     directory: path.resolve(__dirname, '..', 'seeds')
   },
 
-  pool: {
-    afterCreate: (connection: any, done: Function) => {
-      connection.run('PRAGMA foreign_keys = ON');
-      done();
-    }
+
+  connection: {
+    host: 'ep-summer-dream-a590vpw7.us-east-2.aws.neon.tech',
+    port: 5432,
+    user: 'yanzinbugt',
+    database: 'api-node-typescript',
+    password: 'XWVZDORT0b6Q',
+    ssl: { rejectUnauthorized: false },
   }
 };
 
@@ -30,8 +35,10 @@ export const test: Knex.Config = {
   connection: ':memory:',
 };
 
+
+
 // configuração de produção pro knex e sqlite
 
 export const production: Knex.Config = {
-  ...development,
-};
+  ...development
+}

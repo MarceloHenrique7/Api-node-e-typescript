@@ -26,7 +26,7 @@ describe('SignIn - Usuários', () => {
     expect(res1.statusCode).toEqual(StatusCodes.OK)
     expect(res1.body).toHaveProperty('accessToken')
   })
-
+  
   it('Senha Errada', async () => {
     const res1 = await testServer
     .post('/entrar')

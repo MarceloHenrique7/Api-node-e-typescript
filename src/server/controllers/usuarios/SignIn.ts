@@ -5,6 +5,7 @@ import * as yup from 'yup'
 import { IUsuario } from "../../database/models";
 import { UsuariosProvider } from "../../database/providers/usuarios";
 import { validation } from "../../shared/middlewares";
+import { JWTService, PasswordCrypto } from "../../shared/services";
 
 
 interface IBodyProps extends Omit<IUsuario, 'id' | 'nome' > {
@@ -26,9 +27,9 @@ export const signIn = async (req: Request<{}, {}, IBodyProps>, res: Response) =>
   const {email, password} = req.body
 
 
-  const result = await UsuariosProvider.getByEmail(email);
+  const usuario = await UsuariosProvider.getByEmail(email);
 
-  if (result instanceof Error) {
+  if (usuario instanceof Error) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       errors: {
         default: 'Email ou senha são inválidos'
@@ -36,13 +37,27 @@ export const signIn = async (req: Request<{}, {}, IBodyProps>, res: Response) =>
     })
   }
 
-  if (result.password !== password) {
+  const passwordMatch = await PasswordCrypto.verifyPassword(password, usuario.password)
+
+  if (!passwordMatch) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       errors: {
         default: 'Email ou senha são inválidos'
       }
     })
   } else {
-    return res.status(StatusCodes.OK).json({ accessToken: "teste.teste.teste"})
+
+    const token = await JWTService.sign({ uid: usuario.id })
+  
+    if (token === 'JWT_SECRET_NOT_FOUND') {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        errors: {
+          default: 'Não foi possivel criar o token'
+        }
+      })
+    }
+    
+    res.cookie('jwt', token, { httpOnly: true, maxAge: 60 * 60 * 24})
+    return res.status(StatusCodes.CREATED).json(token)
   }
 }

@@ -6,6 +6,7 @@ import * as yup from 'yup'
 import { IUsuario } from "../../database/models";
 import { UsuariosProvider } from "../../database/providers/usuarios";
 import { validation } from "../../shared/middlewares";
+import { JWTService } from "../../shared/services";
 
 
 interface IBodyProps extends Omit<IUsuario, 'id'> {}
@@ -24,7 +25,7 @@ export const signUpValidation = validation((getSchema) => ({
 export const signUp = async (req: Request<{}, {}, IBodyProps>, res: Response) => {
   
   const result = await UsuariosProvider.create(req.body);
-
+  
   if (result instanceof Error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       errors: {
@@ -33,6 +34,17 @@ export const signUp = async (req: Request<{}, {}, IBodyProps>, res: Response) =>
     })
   }
 
+  const token = await JWTService.sign({ uid: result })
+  
+  if (token === 'JWT_SECRET_NOT_FOUND') {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      errors: {
+        default: 'Não foi possivel criar o token'
+      }
+    })
+  }
+  
+  res.cookie('jwt', token, { httpOnly: true, maxAge: 60 * 60 * 24})
   return res.status(StatusCodes.CREATED).json(result)
 
 }
