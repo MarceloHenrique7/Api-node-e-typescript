@@ -1,8 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import { testServer } from "../jest.setup";
 
-
-
 describe('Pessoas - Create', () => {
   let accessToken = '';
 
@@ -12,8 +10,8 @@ describe('Pessoas - Create', () => {
       const SignInRes = await testServer.post('/entrar').send({ email, password: '123456' })
       accessToken = SignInRes.body.accessToken
   })
-
-  let cidadeId: number | undefined = undefined
+  
+  let cidadeId: number | undefined = undefined;
 
   beforeAll(async () => {
 

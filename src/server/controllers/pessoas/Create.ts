@@ -20,6 +20,8 @@ export const createValidation = validation(get => ({
 }))
 
 
+
+
 export const create = async (req: Request<{}, {}, IBodyProps>, res: Response) => {
   
   const result = await PessoasProvider.create(req.body);

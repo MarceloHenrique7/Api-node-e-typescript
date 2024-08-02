@@ -21,7 +21,6 @@ const verify = (token: string): IJwtData | 'JWT_SECRET_NOT_FOUND' | 'INVALID_TOK
 
     if (typeof decoded === 'string') {
       return 'INVALID_TOKEN'
-
     }
 
     return decoded as IJwtData;

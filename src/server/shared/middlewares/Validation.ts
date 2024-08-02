@@ -9,13 +9,9 @@ type TGetSchema = <T>(schema: Schema<T>) => Schema<T>;
 
 type TAllSchemas = Record<TProperty, Schema<any>>;
 
-type TGetAllSchemas = (getSchema: TGetSchema) => Partial<TAllSchemas>;
+type TGetAllSchemas = (getSchema: TGetSchema) => Partial<TAllSchemas>; // partial diz que nem todos campos são obrigatorios
 
 type TValidation = (getAllSchemas: TGetAllSchemas) => RequestHandler;
-
-
-
-
 
 export const validation: TValidation = (getAllSchemas) => async (req, res, next) => {
 

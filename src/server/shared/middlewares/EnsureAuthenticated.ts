@@ -21,7 +21,7 @@ export const ensureAuthenticated: RequestHandler = async (req, res, next) => {
         default: 'Erro ao criar token de autenticação'
       }
     })
-  }
+}
   
   if( isValidToken === "INVALID_TOKEN") {
     return res.status(StatusCodes.BAD_REQUEST).json({

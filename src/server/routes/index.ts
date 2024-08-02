@@ -10,6 +10,7 @@ router.get("/", (_, res) => {
   return res.send("Hello!");
 });
 
+
 router.get("/cidades", ensureAuthenticated, CidadesController.getAllValidation, CidadesController.getAll);
 router.post("/cidades", ensureAuthenticated, CidadesController.createValidation, CidadesController.create);
 router.get("/cidades/:id", ensureAuthenticated, CidadesController.getByIdValidation, CidadesController.getById);
